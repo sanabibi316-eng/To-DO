@@ -1,7 +1,15 @@
-import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid } from 'recharts';
+import {
+  AreaChart,
+  Area,
+  XAxis,
+  YAxis,
+  Tooltip,
+  ResponsiveContainer,
+  CartesianGrid,
+} from 'recharts';
 import { useTasks } from '../../context/TaskContext';
 import { useTheme } from '../../context/ThemeContext';
-import { TrendingUp } from 'lucide-react';
+import { Sparkles, TrendingUp, Award } from 'lucide-react';
 
 export default function ProductivityChart() {
   const { weeklyData } = useTasks();
@@ -12,15 +20,20 @@ export default function ProductivityChart() {
     if (active && payload && payload.length) {
       return (
         <div
-          className="px-3 py-2 rounded-lg border shadow-lg text-xs"
+          className="px-4 py-3 rounded-2xl border shadow-xl text-xs backdrop-blur-md"
           style={{
             backgroundColor: 'var(--card-bg)',
             borderColor: 'var(--border-color)',
             color: 'var(--text-primary)',
           }}
         >
-          <p className="font-medium">{payload[0]?.payload?.fullLabel}</p>
-          <p style={{ color: '#8b5cf6' }}>{payload[0]?.value} tasks completed</p>
+          <p className="font-bold text-sm tracking-tight mb-1">{payload[0]?.payload?.fullLabel}</p>
+          <div className="flex items-center gap-2">
+            <span className="w-2.5 h-2.5 rounded-full bg-indigo-500" />
+            <span className="font-semibold text-indigo-500">
+              {payload[0]?.value} tasks finished
+            </span>
+          </div>
         </div>
       );
     }
@@ -28,54 +41,81 @@ export default function ProductivityChart() {
   };
 
   return (
-    <div
-      className="rounded-xl border p-6"
-      style={{ backgroundColor: 'var(--card-bg)', borderColor: 'var(--border-color)' }}
-    >
+    <div className="rounded-3xl p-6 sm:p-7 glass-panel card-interactive h-full flex flex-col justify-between">
       <div className="flex items-center justify-between mb-6">
         <div>
-          <h3 className="text-base font-semibold" style={{ color: 'var(--text-primary)' }}>
-            Weekly Productivity
-          </h3>
-          <p className="text-xs mt-0.5" style={{ color: 'var(--text-tertiary)' }}>
-            {totalCompleted} tasks completed this week
+          <div className="flex items-center gap-2">
+            <h3 className="text-lg font-bold tracking-tight" style={{ color: 'var(--text-primary)' }}>
+              Weekly Velocity
+            </h3>
+            <span className="badge-pill bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 font-bold border border-indigo-500/20">
+              Live Flow
+            </span>
+          </div>
+          <p className="text-xs font-medium mt-1" style={{ color: 'var(--text-tertiary)' }}>
+            {totalCompleted > 0
+              ? `${totalCompleted} tasks crushed across this week`
+              : 'Complete tasks to see your daily output analytics'}
           </p>
         </div>
-        <div className="w-9 h-9 rounded-xl bg-primary-50 flex items-center justify-center">
-          <TrendingUp size={18} className="text-primary-500" />
+
+        <div className="w-11 h-11 rounded-2xl bg-indigo-500/10 border border-indigo-500/20 flex items-center justify-center text-indigo-500 shadow-sm">
+          <TrendingUp size={20} strokeWidth={2.4} />
         </div>
       </div>
 
       {totalCompleted === 0 ? (
-        <div className="h-48 flex flex-col items-center justify-center text-center">
-          <TrendingUp size={32} style={{ color: 'var(--text-tertiary)' }} className="mb-2" />
-          <p className="text-sm font-medium" style={{ color: 'var(--text-secondary)' }}>
-            No completed tasks this week
+        <div className="h-56 flex flex-col items-center justify-center text-center p-6 border border-dashed rounded-2xl" style={{ borderColor: 'var(--border-subtle)' }}>
+          <div className="w-12 h-12 rounded-2xl bg-indigo-500/10 flex items-center justify-center text-indigo-500 mb-3">
+            <Sparkles size={24} />
+          </div>
+          <p className="text-sm font-semibold" style={{ color: 'var(--text-secondary)' }}>
+            No completed tasks recorded this week
           </p>
-          <p className="text-xs mt-1" style={{ color: 'var(--text-tertiary)' }}>
-            Complete tasks to see your productivity chart
+          <p className="text-xs mt-1 max-w-xs" style={{ color: 'var(--text-tertiary)' }}>
+            Check off items from your task list to generate dynamic velocity curves and progress data.
           </p>
         </div>
       ) : (
-        <ResponsiveContainer width="100%" height={200}>
-          <BarChart data={weeklyData} barSize={32}>
-            <CartesianGrid strokeDasharray="3 3" stroke={theme === 'dark' ? '#2a2a4a' : '#f0f0f0'} vertical={false} />
-            <XAxis
-              dataKey="label"
-              axisLine={false}
-              tickLine={false}
-              tick={{ fontSize: 12, fill: theme === 'dark' ? '#6a6a8a' : '#8a8aa3' }}
-            />
-            <YAxis
-              axisLine={false}
-              tickLine={false}
-              tick={{ fontSize: 12, fill: theme === 'dark' ? '#6a6a8a' : '#8a8aa3' }}
-              allowDecimals={false}
-            />
-            <Tooltip content={<CustomTooltip />} cursor={{ fill: theme === 'dark' ? 'rgba(139,92,246,0.1)' : 'rgba(139,92,246,0.05)' }} />
-            <Bar dataKey="completed" fill="#8b5cf6" radius={[6, 6, 0, 0]} />
-          </BarChart>
-        </ResponsiveContainer>
+        <div className="w-full h-56 pt-2">
+          <ResponsiveContainer width="100%" height="100%">
+            <AreaChart data={weeklyData} margin={{ top: 10, right: 10, left: -25, bottom: 0 }}>
+              <defs>
+                <linearGradient id="velocityGradient" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="5%" stopColor="#6366f1" stopOpacity={0.4} />
+                  <stop offset="95%" stopColor="#6366f1" stopOpacity={0.0} />
+                </linearGradient>
+              </defs>
+              <CartesianGrid
+                strokeDasharray="4 4"
+                stroke={theme === 'dark' ? 'rgba(255,255,255,0.06)' : 'rgba(0,0,0,0.05)'}
+                vertical={false}
+              />
+              <XAxis
+                dataKey="label"
+                axisLine={false}
+                tickLine={false}
+                tick={{ fontSize: 12, fill: theme === 'dark' ? '#64748b' : '#94a3b8', fontWeight: 500 }}
+              />
+              <YAxis
+                axisLine={false}
+                tickLine={false}
+                tick={{ fontSize: 12, fill: theme === 'dark' ? '#64748b' : '#94a3b8', fontWeight: 500 }}
+                allowDecimals={false}
+              />
+              <Tooltip content={<CustomTooltip />} />
+              <Area
+                type="monotone"
+                dataKey="completed"
+                stroke="#6366f1"
+                strokeWidth={3}
+                fillOpacity={1}
+                fill="url(#velocityGradient)"
+                activeDot={{ r: 6, fill: '#6366f1', stroke: '#ffffff', strokeWidth: 2 }}
+              />
+            </AreaChart>
+          </ResponsiveContainer>
+        </div>
       )}
     </div>
   );

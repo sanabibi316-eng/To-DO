@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
-import { X, Type, FileText, Tag, Flag, Calendar } from 'lucide-react';
+import { X, Type, FileText, Tag, Flag, Calendar, Sparkles } from 'lucide-react';
 import { CATEGORIES, PRIORITIES } from '../../utils/constants';
 import { useTasks } from '../../context/TaskContext';
 import { useToast } from '../../context/ToastContext';
@@ -32,7 +32,7 @@ export default function TaskModal({ isOpen, onClose, editTask = null }) {
         setForm({ title: '', description: '', category: '', priority: 'medium', dueDate: '' });
       }
       setErrors({});
-      setTimeout(() => titleRef.current?.focus(), 100);
+      setTimeout(() => titleRef.current?.focus(), 120);
     }
   }, [isOpen, editTask]);
 
@@ -81,35 +81,55 @@ export default function TaskModal({ isOpen, onClose, editTask = null }) {
   return (
     <div
       className="fixed inset-0 z-50 flex items-center justify-center p-4"
-      style={{ backgroundColor: 'var(--modal-overlay)' }}
+      style={{
+        backgroundColor: 'var(--modal-overlay)',
+        backdropFilter: 'blur(8px)',
+        WebkitBackdropFilter: 'blur(8px)',
+      }}
       onClick={(e) => e.target === e.currentTarget && onClose()}
       role="dialog"
       aria-modal="true"
       aria-labelledby="task-modal-title"
     >
       <div
-        className="w-full max-w-lg rounded-2xl border shadow-2xl overflow-hidden"
+        className="w-full max-w-lg rounded-3xl border shadow-2xl overflow-hidden animate-entrance"
         style={{
-          backgroundColor: 'var(--card-bg)',
+          backgroundColor: 'var(--card-bg-solid)',
           borderColor: 'var(--border-color)',
         }}
       >
-        {/* Header */}
-        <div className="flex items-center justify-between px-6 py-4 border-b" style={{ borderColor: 'var(--border-color)' }}>
-          <h2 id="task-modal-title" className="text-lg font-semibold" style={{ color: 'var(--text-primary)' }}>
-            {editTask ? 'Edit Task' : 'New Task'}
-          </h2>
-          <button onClick={onClose} className="p-1 rounded-lg hover:opacity-70 transition-opacity" aria-label="Close modal">
-            <X size={20} style={{ color: 'var(--text-tertiary)' }} />
+        {/* Modal Header */}
+        <div
+          className="flex items-center justify-between px-6 py-5 border-b"
+          style={{ borderColor: 'var(--border-subtle)' }}
+        >
+          <div className="flex items-center gap-2.5">
+            <div className="w-8 h-8 rounded-xl bg-indigo-500/10 flex items-center justify-center text-indigo-500">
+              <Sparkles size={16} />
+            </div>
+            <h2 id="task-modal-title" className="text-lg font-extrabold tracking-tight" style={{ color: 'var(--text-primary)' }}>
+              {editTask ? 'Edit Task Deliverable' : 'Create New Deliverable'}
+            </h2>
+          </div>
+          <button
+            onClick={onClose}
+            className="p-2 rounded-xl hover:bg-slate-500/10 transition-colors"
+            aria-label="Close modal"
+          >
+            <X size={18} style={{ color: 'var(--text-tertiary)' }} />
           </button>
         </div>
 
-        {/* Form */}
-        <form onSubmit={handleSubmit} className="p-6 space-y-4">
+        {/* Modal Form */}
+        <form onSubmit={handleSubmit} className="p-6 space-y-5">
           {/* Title */}
           <div>
-            <label htmlFor="task-title" className="flex items-center gap-2 text-sm font-medium mb-1.5" style={{ color: 'var(--text-secondary)' }}>
-              <Type size={14} /> Title <span className="text-red-400">*</span>
+            <label
+              htmlFor="task-title"
+              className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider mb-2"
+              style={{ color: 'var(--text-secondary)' }}
+            >
+              <Type size={14} className="text-indigo-500" /> Title <span className="text-rose-500">*</span>
             </label>
             <input
               ref={titleRef}
@@ -117,9 +137,11 @@ export default function TaskModal({ isOpen, onClose, editTask = null }) {
               type="text"
               value={form.title}
               onChange={(e) => handleChange('title', e.target.value)}
-              placeholder="What needs to be done?"
-              className={`w-full px-3 py-2.5 rounded-xl border text-sm transition-all outline-none ${
-                errors.title ? 'border-red-400' : 'focus:border-primary-400 focus:shadow-[0_0_0_3px_rgba(139,92,246,0.1)]'
+              placeholder="e.g., Finalize presentation slides & submit report"
+              className={`w-full px-4 py-3 rounded-2xl border text-sm font-medium transition-all outline-none ${
+                errors.title
+                  ? 'border-rose-500 shadow-sm'
+                  : 'focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20'
               }`}
               style={{
                 backgroundColor: 'var(--input-bg)',
@@ -127,10 +149,9 @@ export default function TaskModal({ isOpen, onClose, editTask = null }) {
                 color: 'var(--text-primary)',
               }}
               aria-invalid={!!errors.title}
-              aria-describedby={errors.title ? 'title-error' : undefined}
             />
             {errors.title && (
-              <p id="title-error" className="text-xs text-red-400 mt-1" role="alert">
+              <p className="text-xs font-semibold text-rose-500 mt-1.5" role="alert">
                 {errors.title}
               </p>
             )}
@@ -138,16 +159,20 @@ export default function TaskModal({ isOpen, onClose, editTask = null }) {
 
           {/* Description */}
           <div>
-            <label htmlFor="task-desc" className="flex items-center gap-2 text-sm font-medium mb-1.5" style={{ color: 'var(--text-secondary)' }}>
-              <FileText size={14} /> Description
+            <label
+              htmlFor="task-desc"
+              className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider mb-2"
+              style={{ color: 'var(--text-secondary)' }}
+            >
+              <FileText size={14} className="text-indigo-500" /> Description
             </label>
             <textarea
               id="task-desc"
               value={form.description}
               onChange={(e) => handleChange('description', e.target.value)}
-              placeholder="Add details..."
+              placeholder="Add key context, links, or bullet points..."
               rows={3}
-              className="w-full px-3 py-2.5 rounded-xl border text-sm transition-all outline-none resize-none focus:border-primary-400 focus:shadow-[0_0_0_3px_rgba(139,92,246,0.1)]"
+              className="w-full px-4 py-3 rounded-2xl border text-sm font-medium transition-all outline-none resize-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20"
               style={{
                 backgroundColor: 'var(--input-bg)',
                 borderColor: 'var(--border-color)',
@@ -156,24 +181,28 @@ export default function TaskModal({ isOpen, onClose, editTask = null }) {
             />
           </div>
 
-          {/* Category & Priority */}
+          {/* Category & Priority Grid */}
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label htmlFor="task-category" className="flex items-center gap-2 text-sm font-medium mb-1.5" style={{ color: 'var(--text-secondary)' }}>
-                <Tag size={14} /> Category
+              <label
+                htmlFor="task-category"
+                className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider mb-2"
+                style={{ color: 'var(--text-secondary)' }}
+              >
+                <Tag size={14} className="text-indigo-500" /> Category
               </label>
               <select
                 id="task-category"
                 value={form.category}
                 onChange={(e) => handleChange('category', e.target.value)}
-                className="w-full px-3 py-2.5 rounded-xl border text-sm transition-all outline-none focus:border-primary-400 appearance-none cursor-pointer"
+                className="w-full px-3.5 py-2.5 rounded-2xl border text-sm font-medium transition-all outline-none focus:border-indigo-500 cursor-pointer"
                 style={{
                   backgroundColor: 'var(--input-bg)',
                   borderColor: 'var(--border-color)',
                   color: 'var(--text-primary)',
                 }}
               >
-                <option value="">None</option>
+                <option value="">General</option>
                 {CATEGORIES.map((cat) => (
                   <option key={cat.id} value={cat.id}>
                     {cat.label}
@@ -183,14 +212,18 @@ export default function TaskModal({ isOpen, onClose, editTask = null }) {
             </div>
 
             <div>
-              <label htmlFor="task-priority" className="flex items-center gap-2 text-sm font-medium mb-1.5" style={{ color: 'var(--text-secondary)' }}>
-                <Flag size={14} /> Priority
+              <label
+                htmlFor="task-priority"
+                className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider mb-2"
+                style={{ color: 'var(--text-secondary)' }}
+              >
+                <Flag size={14} className="text-indigo-500" /> Priority
               </label>
               <select
                 id="task-priority"
                 value={form.priority}
                 onChange={(e) => handleChange('priority', e.target.value)}
-                className="w-full px-3 py-2.5 rounded-xl border text-sm transition-all outline-none focus:border-primary-400 appearance-none cursor-pointer"
+                className="w-full px-3.5 py-2.5 rounded-2xl border text-sm font-medium transition-all outline-none focus:border-indigo-500 cursor-pointer"
                 style={{
                   backgroundColor: 'var(--input-bg)',
                   borderColor: 'var(--border-color)',
@@ -208,15 +241,19 @@ export default function TaskModal({ isOpen, onClose, editTask = null }) {
 
           {/* Due Date */}
           <div>
-            <label htmlFor="task-due" className="flex items-center gap-2 text-sm font-medium mb-1.5" style={{ color: 'var(--text-secondary)' }}>
-              <Calendar size={14} /> Due Date
+            <label
+              htmlFor="task-due"
+              className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider mb-2"
+              style={{ color: 'var(--text-secondary)' }}
+            >
+              <Calendar size={14} className="text-indigo-500" /> Target Deadline
             </label>
             <input
               id="task-due"
               type="date"
               value={form.dueDate}
               onChange={(e) => handleChange('dueDate', e.target.value)}
-              className="w-full px-3 py-2.5 rounded-xl border text-sm transition-all outline-none focus:border-primary-400"
+              className="w-full px-4 py-2.5 rounded-2xl border text-sm font-medium transition-all outline-none focus:border-indigo-500"
               style={{
                 backgroundColor: 'var(--input-bg)',
                 borderColor: 'var(--border-color)',
@@ -225,14 +262,14 @@ export default function TaskModal({ isOpen, onClose, editTask = null }) {
             />
           </div>
 
-          {/* Actions */}
-          <div className="flex gap-3 pt-2">
+          {/* Action Row */}
+          <div className="flex items-center gap-3 pt-3">
             <button
               type="button"
               onClick={onClose}
-              className="flex-1 px-4 py-2.5 rounded-xl text-sm font-medium border transition-colors"
+              className="flex-1 px-4 py-3 rounded-2xl text-sm font-bold border transition-colors"
               style={{
-                borderColor: 'var(--border-color)',
+                borderColor: 'var(--border-subtle)',
                 color: 'var(--text-secondary)',
                 backgroundColor: 'var(--bg-tertiary)',
               }}
@@ -241,9 +278,9 @@ export default function TaskModal({ isOpen, onClose, editTask = null }) {
             </button>
             <button
               type="submit"
-              className="flex-1 px-4 py-2.5 rounded-xl text-sm font-medium bg-primary-600 text-white hover:bg-primary-700 transition-colors"
+              className="flex-1 btn-vibrant px-4 py-3 rounded-2xl text-sm font-bold"
             >
-              {editTask ? 'Save Changes' : 'Create Task'}
+              {editTask ? 'Save Updates' : 'Launch Task'}
             </button>
           </div>
         </form>
