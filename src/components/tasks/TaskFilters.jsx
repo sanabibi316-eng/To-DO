@@ -1,4 +1,4 @@
-import { SlidersHorizontal, ArrowUpDown, X, Sparkles } from 'lucide-react';
+import { SlidersHorizontal, ArrowUpDown, X, ChevronDown } from 'lucide-react';
 import { CATEGORIES, PRIORITIES, SORT_OPTIONS } from '../../utils/constants';
 
 export default function TaskFilters({ filters, onChange }) {
@@ -13,18 +13,13 @@ export default function TaskFilters({ filters, onChange }) {
   };
 
   return (
-    <div className="flex flex-wrap items-center gap-2.5 p-3 rounded-2xl glass-panel border" style={{ borderColor: 'var(--border-subtle)' }}>
-      {/* Status Selector */}
+    <div className="flex flex-wrap items-center gap-2 p-2 sm:p-2.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-xs">
+      {/* Status */}
       <div className="relative">
         <select
           value={filters.status || ''}
           onChange={(e) => handleChange('status', e.target.value)}
-          className="px-3.5 py-2 rounded-xl border text-xs font-bold transition-all outline-none cursor-pointer appearance-none pr-8"
-          style={{
-            backgroundColor: 'var(--bg-tertiary)',
-            borderColor: 'var(--border-subtle)',
-            color: 'var(--text-secondary)',
-          }}
+          className="appearance-none pl-3 pr-7 py-1.5 rounded-lg border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-xs font-semibold text-slate-700 dark:text-slate-200 hover:border-slate-300 dark:hover:border-slate-600 cursor-pointer focus:outline-none focus:ring-1 focus:ring-indigo-500"
           aria-label="Filter by status"
         >
           <option value="">Status: All</option>
@@ -32,43 +27,33 @@ export default function TaskFilters({ filters, onChange }) {
           <option value="completed">Completed</option>
           <option value="overdue">Overdue</option>
         </select>
-        <span className="pointer-events-none absolute right-2.5 top-1/2 -translate-y-1/2 text-[10px] opacity-50">▼</span>
+        <ChevronDown size={13} className="pointer-events-none absolute right-2 top-1/2 -translate-y-1/2 text-slate-400" />
       </div>
 
-      {/* Priority Selector */}
+      {/* Priority */}
       <div className="relative">
         <select
           value={filters.priority || ''}
           onChange={(e) => handleChange('priority', e.target.value)}
-          className="px-3.5 py-2 rounded-xl border text-xs font-bold transition-all outline-none cursor-pointer appearance-none pr-8"
-          style={{
-            backgroundColor: 'var(--bg-tertiary)',
-            borderColor: 'var(--border-subtle)',
-            color: 'var(--text-secondary)',
-          }}
+          className="appearance-none pl-3 pr-7 py-1.5 rounded-lg border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-xs font-semibold text-slate-700 dark:text-slate-200 hover:border-slate-300 dark:hover:border-slate-600 cursor-pointer focus:outline-none focus:ring-1 focus:ring-indigo-500"
           aria-label="Filter by priority"
         >
           <option value="">Priority: All</option>
           {PRIORITIES.map((p) => (
             <option key={p.id} value={p.id}>
-              {p.icon} {p.label}
+              {p.label}
             </option>
           ))}
         </select>
-        <span className="pointer-events-none absolute right-2.5 top-1/2 -translate-y-1/2 text-[10px] opacity-50">▼</span>
+        <ChevronDown size={13} className="pointer-events-none absolute right-2 top-1/2 -translate-y-1/2 text-slate-400" />
       </div>
 
-      {/* Category Selector */}
+      {/* Category */}
       <div className="relative">
         <select
           value={filters.category || ''}
           onChange={(e) => handleChange('category', e.target.value)}
-          className="px-3.5 py-2 rounded-xl border text-xs font-bold transition-all outline-none cursor-pointer appearance-none pr-8"
-          style={{
-            backgroundColor: 'var(--bg-tertiary)',
-            borderColor: 'var(--border-subtle)',
-            color: 'var(--text-secondary)',
-          }}
+          className="appearance-none pl-3 pr-7 py-1.5 rounded-lg border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-xs font-semibold text-slate-700 dark:text-slate-200 hover:border-slate-300 dark:hover:border-slate-600 cursor-pointer focus:outline-none focus:ring-1 focus:ring-indigo-500"
           aria-label="Filter by category"
         >
           <option value="">Category: All</option>
@@ -78,20 +63,15 @@ export default function TaskFilters({ filters, onChange }) {
             </option>
           ))}
         </select>
-        <span className="pointer-events-none absolute right-2.5 top-1/2 -translate-y-1/2 text-[10px] opacity-50">▼</span>
+        <ChevronDown size={13} className="pointer-events-none absolute right-2 top-1/2 -translate-y-1/2 text-slate-400" />
       </div>
 
-      {/* Sort Options */}
+      {/* Sort */}
       <div className="relative ml-auto">
         <select
           value={filters.sort || 'createdAt-desc'}
           onChange={(e) => handleChange('sort', e.target.value)}
-          className="px-3.5 py-2 rounded-xl border text-xs font-bold transition-all outline-none cursor-pointer appearance-none pr-8"
-          style={{
-            backgroundColor: 'var(--bg-tertiary)',
-            borderColor: 'var(--border-subtle)',
-            color: 'var(--text-secondary)',
-          }}
+          className="appearance-none pl-3 pr-7 py-1.5 rounded-lg border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-xs font-semibold text-slate-700 dark:text-slate-200 hover:border-slate-300 dark:hover:border-slate-600 cursor-pointer focus:outline-none focus:ring-1 focus:ring-indigo-500"
           aria-label="Sort tasks"
         >
           {SORT_OPTIONS.map((opt) => (
@@ -100,17 +80,17 @@ export default function TaskFilters({ filters, onChange }) {
             </option>
           ))}
         </select>
-        <span className="pointer-events-none absolute right-2.5 top-1/2 -translate-y-1/2 text-[10px] opacity-50">▼</span>
+        <ChevronDown size={13} className="pointer-events-none absolute right-2 top-1/2 -translate-y-1/2 text-slate-400" />
       </div>
 
       {/* Clear Filters Button */}
       {hasFilters && (
         <button
           onClick={clearFilters}
-          className="flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-bold text-rose-500 hover:bg-rose-500/10 transition-colors"
+          className="flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-xs font-bold text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-950/40 transition-colors"
           aria-label="Clear all filters"
         >
-          <X size={13} strokeWidth={2.5} />
+          <X size={12} strokeWidth={2.5} />
           Reset
         </button>
       )}
