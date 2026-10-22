@@ -1,166 +1,131 @@
 import { useState } from 'react';
-import { Check, Pencil, Trash2, Calendar, Flag, Tag } from 'lucide-react';
+import { Check, Pencil, MoreHorizontal, Calendar, Flag, GraduationCap, Briefcase, User, BookOpen, Trash2 } from 'lucide-react';
 import { CATEGORIES, PRIORITIES } from '../../utils/constants';
 import { formatDate, isOverdue } from '../../utils/helpers';
 import { useTasks } from '../../context/TaskContext';
-import { useTheme } from '../../context/ThemeContext';
 
 export default function TaskCard({ task, onEdit }) {
   const { toggleComplete, deleteTask } = useTasks();
-  const { theme } = useTheme();
-  const [showDelete, setShowDelete] = useState(false);
+  const [showMenu, setShowMenu] = useState(false);
 
   const category = CATEGORIES.find((c) => c.id === task.category);
   const priority = PRIORITIES.find((p) => p.id === task.priority);
   const overdue = isOverdue(task.dueDate, task.completed);
-  const isDark = theme === 'dark';
 
   return (
     <div
-      className={`group relative rounded-xl p-4 sm:p-5 transition-all duration-200 border ${
-        task.completed ? 'opacity-60 bg-slate-50/50 dark:bg-slate-900/40' : 'bg-white dark:bg-slate-900 hover:shadow-md'
+      className={`group relative bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-5 transition-all shadow-xs ${
+        task.completed ? 'opacity-60 bg-slate-50/50 dark:bg-slate-950/40' : ''
       }`}
-      style={{
-        borderColor: overdue && !task.completed ? '#fca5a5' : 'var(--border-color)',
-      }}
     >
-      {/* Left Priority Accent Bar */}
-      {priority && !task.completed && (
-        <div
-          className="absolute left-0 top-3 bottom-3 w-1 rounded-r-md"
-          style={{ backgroundColor: priority.color }}
-          aria-hidden="true"
-        />
-      )}
+      <div className="flex items-start justify-between gap-4">
+        {/* Left Check Circle + Title & Tags */}
+        <div className="flex items-start gap-4 flex-1 min-w-0">
+          {/* Circular Checkbox */}
+          <button
+            onClick={() => toggleComplete(task.id)}
+            className={`w-6 h-6 rounded-full border-2 flex items-center justify-center flex-shrink-0 mt-0.5 transition-all ${
+              task.completed
+                ? 'bg-indigo-600 border-indigo-600 text-white'
+                : 'border-slate-300 dark:border-slate-600 hover:border-indigo-500 bg-white dark:bg-slate-900'
+            }`}
+            aria-label={task.completed ? 'Mark task as pending' : 'Mark task as completed'}
+          >
+            {task.completed && <Check size={13} strokeWidth={3} />}
+          </button>
 
-      <div className="flex items-start gap-3.5 pl-1.5">
-        {/* Custom Rounded Checkbox */}
-        <button
-          onClick={() => toggleComplete(task.id)}
-          className={`w-5 h-5 rounded-md border flex items-center justify-center flex-shrink-0 mt-0.5 transition-all ${
-            task.completed
-              ? 'bg-indigo-600 border-indigo-600 text-white shadow-xs'
-              : 'border-slate-300 dark:border-slate-600 hover:border-indigo-500 bg-white dark:bg-slate-800'
-          }`}
-          aria-label={task.completed ? `Mark "${task.title}" as pending` : `Mark "${task.title}" as completed`}
-        >
-          {task.completed && <Check size={13} strokeWidth={3} />}
-        </button>
-
-        {/* Task Title & Details */}
-        <div className="flex-1 min-w-0 pr-2">
-          <div className="flex items-baseline gap-2">
+          {/* Title & Description & Tags */}
+          <div className="space-y-1.5 flex-1 min-w-0">
             <h3
-              className={`text-[14.5px] font-bold tracking-tight leading-snug ${
-                task.completed ? 'line-through text-slate-400 dark:text-slate-500' : 'text-slate-900 dark:text-slate-100'
+              className={`text-[15px] font-bold tracking-tight text-slate-900 dark:text-slate-100 ${
+                task.completed ? 'line-through text-slate-400 dark:text-slate-500' : ''
               }`}
             >
               {task.title}
             </h3>
-          </div>
 
-          {task.description && (
-            <p
-              className="text-[13px] mt-1 line-clamp-2 leading-relaxed text-slate-500 dark:text-slate-400"
-            >
-              {task.description}
-            </p>
-          )}
+            {task.description && (
+              <p className="text-[13px] text-slate-400 dark:text-slate-400 font-normal line-clamp-2">
+                {task.description}
+              </p>
+            )}
 
-          {/* Tags & Meta Row */}
-          {(category || priority || task.dueDate) && (
-            <div className="flex flex-wrap items-center gap-2 mt-3">
-              {category && (
-                <span
-                  className="badge-pill border"
-                  style={{
-                    backgroundColor: isDark ? category.darkBgColor : category.bgColor,
-                    borderColor: `${category.color}35`,
-                    color: category.color,
-                  }}
-                >
-                  <Tag size={10} strokeWidth={2.5} />
-                  {category.label}
+            {/* Badges Row */}
+            <div className="flex flex-wrap items-center gap-2 pt-1.5">
+              {/* Category pill */}
+              {category ? (
+                <span className="tag-pill bg-indigo-50 dark:bg-indigo-950/50 text-indigo-600 dark:text-indigo-400 border border-indigo-100 dark:border-indigo-900/50">
+                  <GraduationCap size={12} strokeWidth={2.4} />
+                  <span>{category.label}</span>
                 </span>
-              )}
+              ) : null}
 
-              {priority && (
-                <span
-                  className="badge-pill border"
-                  style={{
-                    backgroundColor: isDark ? priority.darkBgColor : priority.bgColor,
-                    borderColor: `${priority.color}35`,
-                    color: priority.color,
-                  }}
-                >
-                  <Flag size={10} strokeWidth={2.5} fill={priority.color} />
-                  {priority.label}
+              {/* Priority pill */}
+              {priority ? (
+                <span className="tag-pill bg-amber-50 dark:bg-amber-950/50 text-amber-600 dark:text-amber-400 border border-amber-100 dark:border-amber-900/50">
+                  <Flag size={11} strokeWidth={2.5} fill="#d97706" />
+                  <span>{priority.label}</span>
                 </span>
-              )}
+              ) : null}
 
-              {task.dueDate && (
+              {/* Due Date pill */}
+              {task.dueDate ? (
                 <span
-                  className={`badge-pill border ${
+                  className={`tag-pill border ${
                     overdue && !task.completed
-                      ? 'bg-red-50 text-red-600 border-red-200 dark:bg-red-950/40 dark:text-red-400 dark:border-red-900/60'
-                      : 'bg-slate-100 text-slate-600 border-slate-200 dark:bg-slate-800 dark:text-slate-300 dark:border-slate-700'
+                      ? 'bg-red-50 text-red-600 border-red-100 dark:bg-red-950/50 dark:text-red-400'
+                      : 'bg-indigo-50/70 text-indigo-600 border-indigo-100 dark:bg-indigo-950/30 dark:text-indigo-400'
                   }`}
                 >
-                  <Calendar size={10} strokeWidth={2.5} />
-                  {formatDate(task.dueDate)}
-                  {overdue && !task.completed && ' • Overdue'}
+                  <Calendar size={11} strokeWidth={2.4} />
+                  <span>{formatDate(task.dueDate)}</span>
                 </span>
-              )}
+              ) : null}
             </div>
-          )}
+          </div>
         </div>
 
-        {/* Action Buttons */}
-        <div className="flex items-center gap-1 opacity-90 sm:opacity-0 group-hover:opacity-100 transition-opacity">
+        {/* Right Action Icons: Pencil & MoreHorizontal */}
+        <div className="flex items-center gap-1.5 flex-shrink-0">
           <button
             onClick={() => onEdit(task)}
-            className="p-1.5 rounded-lg text-slate-400 hover:text-indigo-600 hover:bg-indigo-50 dark:hover:bg-indigo-950/50 transition-colors"
+            className="w-8 h-8 rounded-lg flex items-center justify-center bg-slate-50 dark:bg-slate-800 text-slate-400 hover:text-indigo-600 hover:bg-indigo-50 dark:hover:bg-indigo-950/50 transition-colors"
             title="Edit task"
-            aria-label={`Edit "${task.title}"`}
+            aria-label="Edit task"
           >
             <Pencil size={15} />
           </button>
-          <button
-            onClick={() => setShowDelete(true)}
-            className="p-1.5 rounded-lg text-slate-400 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-950/50 transition-colors"
-            title="Delete task"
-            aria-label={`Delete "${task.title}"`}
-          >
-            <Trash2 size={15} />
-          </button>
-        </div>
-      </div>
 
-      {/* Inline Delete Confirmation */}
-      {showDelete && (
-        <div className="mt-3 pt-3 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between gap-3">
-          <p className="text-xs font-medium text-slate-600 dark:text-slate-400">
-            Permanently delete this task?
-          </p>
-          <div className="flex items-center gap-2">
+          <div className="relative">
             <button
-              onClick={() => setShowDelete(false)}
-              className="px-2.5 py-1 text-xs font-semibold rounded-lg border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800"
+              onClick={() => setShowMenu(!showMenu)}
+              className="w-8 h-8 rounded-lg flex items-center justify-center bg-slate-50 dark:bg-slate-800 text-slate-400 hover:text-slate-600 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
+              title="More options"
+              aria-label="More options"
             >
-              Cancel
+              <MoreHorizontal size={16} />
             </button>
-            <button
-              onClick={() => {
-                deleteTask(task.id);
-                setShowDelete(false);
-              }}
-              className="px-3 py-1 text-xs font-semibold rounded-lg bg-red-600 hover:bg-red-700 text-white shadow-xs"
-            >
-              Delete
-            </button>
+
+            {showMenu && (
+              <div
+                className="absolute right-0 top-full mt-1.5 w-32 bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 shadow-lg py-1 z-20"
+                onMouseLeave={() => setShowMenu(false)}
+              >
+                <button
+                  onClick={() => {
+                    deleteTask(task.id);
+                    setShowMenu(false);
+                  }}
+                  className="w-full text-left px-3 py-2 text-xs font-semibold text-red-600 hover:bg-red-50 dark:hover:bg-red-950/40 flex items-center gap-2"
+                >
+                  <Trash2 size={13} />
+                  Delete
+                </button>
+              </div>
+            )}
           </div>
         </div>
-      )}
+      </div>
     </div>
   );
 }

@@ -6,68 +6,49 @@
   --color-primary-200: #ddd6fe;
   --color-primary-300: #c4b5fd;
   --color-primary-400: #a78bfa;
-  --color-primary-500: #8b5cf6;
-  --color-primary-600: #7c3aed;
-  --color-primary-700: #6d28d9;
-  --color-primary-800: #5b21b6;
-  --color-primary-900: #4c1d95;
+  --color-primary-500: #6366f1;
+  --color-primary-600: #4f46e5;
+  --color-primary-700: #4338ca;
 
   --font-sans: 'Plus Jakarta Sans', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-  --font-mono: 'JetBrains Mono', monospace;
 }
 
 :root {
-  --bg-primary: #f8fafc;
+  --bg-primary: #f8f9fc;
   --bg-secondary: #ffffff;
-  --bg-tertiary: #f1f5f9;
-  --card-bg: #ffffff;
-  --card-bg-solid: #ffffff;
-  --input-bg: #ffffff;
-  --hover-bg: #f8fafc;
-  --sidebar-bg: #ffffff;
+  --bg-sidebar: #ffffff;
+  --bg-card: #ffffff;
+  --bg-input: #ffffff;
 
-  --text-primary: #0f172a;
-  --text-secondary: #334155;
-  --text-tertiary: #64748b;
+  --text-main: #0f172a;
+  --text-muted: #64748b;
+  --text-subtle: #94a3b8;
 
-  --border-color: #e2e8f0;
-  --border-strong: #cbd5e1;
-  --border-subtle: #f1f5f9;
+  --border-light: #eef2f6;
+  --border-default: #e2e8f0;
+  --border-card: #e5e7eb;
 
-  --modal-overlay: rgba(15, 23, 42, 0.6);
-  --accent-glow: rgba(99, 102, 241, 0.12);
-  --accent-subtle: #eef2ff;
-
-  --shadow-sm: 0 1px 3px 0 rgba(0, 0, 0, 0.05), 0 1px 2px -1px rgba(0, 0, 0, 0.05);
-  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.07), 0 2px 4px -2px rgba(0, 0, 0, 0.05);
-  --shadow-lg: 0 10px 25px -3px rgba(0, 0, 0, 0.08), 0 4px 10px -2px rgba(0, 0, 0, 0.04);
+  --accent-purple: #6366f1;
+  --accent-active-item: #f4f3ff;
 }
 
 .dark {
   --bg-primary: #0b0f19;
   --bg-secondary: #111827;
-  --bg-tertiary: #1f2937;
-  --card-bg: #111827;
-  --card-bg-solid: #111827;
-  --input-bg: #1f2937;
-  --hover-bg: #1f2937;
-  --sidebar-bg: #0d131f;
+  --bg-sidebar: #111827;
+  --bg-card: #131c2e;
+  --bg-input: #1f2937;
 
-  --text-primary: #f9fafb;
-  --text-secondary: #e2e8f0;
-  --text-tertiary: #94a3b8;
+  --text-main: #f8fafc;
+  --text-muted: #94a3b8;
+  --text-subtle: #64748b;
 
-  --border-color: #1f2937;
-  --border-strong: #374151;
-  --border-subtle: #192231;
+  --border-light: #1f2937;
+  --border-default: #374151;
+  --border-card: #1f2937;
 
-  --modal-overlay: rgba(0, 0, 0, 0.8);
-  --accent-glow: rgba(99, 102, 241, 0.25);
-  --accent-subtle: rgba(99, 102, 241, 0.15);
-
-  --shadow-sm: 0 1px 3px 0 rgba(0, 0, 0, 0.5);
-  --shadow-md: 0 4px 12px -1px rgba(0, 0, 0, 0.5);
-  --shadow-lg: 0 12px 30px -4px rgba(0, 0, 0, 0.6);
+  --accent-purple: #818cf8;
+  --accent-active-item: rgba(99, 102, 241, 0.12);
 }
 
 * {
@@ -77,104 +58,64 @@
 }
 
 html, body, #root {
-  min-height: 100%;
   height: 100%;
+  min-height: 100%;
 }
 
 body {
   font-family: var(--font-sans);
   background-color: var(--bg-primary);
-  color: var(--text-primary);
+  color: var(--text-main);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  line-height: 1.5;
 }
 
-/* Background Subtle Gradient */
-.ambient-bg {
-  position: fixed;
-  inset: 0;
-  pointer-events: none;
-  z-index: 0;
-  background: radial-gradient(circle at 10% 10%, rgba(99, 102, 241, 0.03) 0%, transparent 40%),
-              radial-gradient(circle at 90% 80%, rgba(236, 72, 153, 0.03) 0%, transparent 40%);
+/* Custom rounded pill button / tag */
+.filter-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.45rem 0.95rem;
+  background-color: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 9999px;
+  font-size: 0.8125rem;
+  font-weight: 500;
+  color: #334155;
+  transition: all 0.15s ease;
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.03);
 }
 
-.dark .ambient-bg {
-  background: radial-gradient(circle at 10% 10%, rgba(99, 102, 241, 0.08) 0%, transparent 40%),
-              radial-gradient(circle at 90% 80%, rgba(236, 72, 153, 0.06) 0%, transparent 40%);
+.dark .filter-pill {
+  background-color: #1a2234;
+  border-color: #2e384d;
+  color: #e2e8f0;
 }
 
-/* Glass & Card Styles */
-.premium-card {
-  background-color: var(--card-bg);
-  border: 1px solid var(--border-color);
-  box-shadow: var(--shadow-sm);
-  border-radius: 1rem;
+.filter-pill:hover {
+  border-color: #cbd5e1;
+  background-color: #f8fafc;
+}
+.dark .filter-pill:hover {
+  border-color: #475569;
+  background-color: #222d42;
 }
 
-.premium-card:hover {
-  box-shadow: var(--shadow-md);
-  border-color: var(--border-strong);
-}
-
-/* Modern Gradient Text */
-.gradient-text-vibrant {
-  background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 50%, #d946ef 100%);
-  -webkit-background-clip: text;
-  background-clip: text;
-  -webkit-text-fill-color: transparent;
-}
-
-/* Buttons */
-.btn-vibrant {
-  background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%);
-  color: #ffffff;
-  box-shadow: 0 2px 8px rgba(99, 102, 241, 0.35);
-  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
-}
-
-.btn-vibrant:hover {
-  opacity: 0.95;
-  transform: translateY(-1px);
-  box-shadow: 0 4px 14px rgba(99, 102, 241, 0.45);
-}
-
-.btn-vibrant:active {
-  transform: translateY(1px);
-}
-
-/* Badge Pill */
-.badge-pill {
+/* Badges inside task cards */
+.tag-pill {
   display: inline-flex;
   align-items: center;
   gap: 0.35rem;
-  padding: 0.2rem 0.6rem;
+  padding: 0.22rem 0.7rem;
   border-radius: 9999px;
-  font-size: 0.72rem;
+  font-size: 0.75rem;
   font-weight: 600;
 }
 
-/* Utility */
+/* Line clamp */
 .line-clamp-2 {
   display: -webkit-box;
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
   overflow: hidden;
-}
-
-/* Scrollbar */
-::-webkit-scrollbar {
-  width: 6px;
-  height: 6px;
-}
-::-webkit-scrollbar-track {
-  background: transparent;
-}
-::-webkit-scrollbar-thumb {
-  background: var(--border-strong);
-  border-radius: 9999px;
-}
-::-webkit-scrollbar-thumb:hover {
-  background: var(--text-tertiary);
 }

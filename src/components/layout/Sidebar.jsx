@@ -1,28 +1,24 @@
-import { useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import {
-  LayoutDashboard,
-  ClipboardList,
-  CalendarDays,
-  CalendarClock,
+  Home,
+  CheckSquare,
+  Calendar,
+  Clock,
   CheckCircle2,
   Settings,
-  ChevronLeft,
   ChevronRight,
-  Sparkles,
   Zap,
 } from 'lucide-react';
 
 const navItems = [
-  { label: 'Dashboard', path: '/', icon: LayoutDashboard },
-  { label: 'My Tasks', path: '/tasks', icon: ClipboardList },
-  { label: 'Today', path: '/today', icon: CalendarDays },
-  { label: 'Upcoming', path: '/upcoming', icon: CalendarClock },
+  { label: 'Dashboard', path: '/', icon: Home },
+  { label: 'My Tasks', path: '/tasks', icon: CheckSquare },
+  { label: 'Today', path: '/today', icon: Calendar },
+  { label: 'Upcoming', path: '/upcoming', icon: Clock },
   { label: 'Completed', path: '/completed', icon: CheckCircle2 },
 ];
 
 export default function Sidebar() {
-  const [collapsed, setCollapsed] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -33,52 +29,30 @@ export default function Sidebar() {
 
   return (
     <aside
-      className={`hidden md:flex flex-col h-screen sticky top-0 transition-all duration-300 flex-shrink-0 z-30 ${
-        collapsed ? 'w-[84px]' : 'w-[260px]'
-      }`}
-      style={{
-        backgroundColor: 'var(--sidebar-bg)',
-        backdropFilter: 'blur(20px)',
-        WebkitBackdropFilter: 'blur(20px)',
-        borderRight: '1px solid var(--border-color)',
-      }}
+      className="hidden md:flex flex-col w-[260px] h-screen sticky top-0 border-r border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 flex-shrink-0 z-30"
     >
-      {/* Brand Header */}
-      <div
-        className="flex items-center gap-3 px-5 h-20 border-b flex-shrink-0"
-        style={{ borderColor: 'var(--border-subtle)' }}
-      >
+      {/* Brand Logo Header */}
+      <div className="flex items-center gap-3.5 px-6 pt-7 pb-6">
         <div
-          className="w-11 h-11 rounded-2xl flex items-center justify-center flex-shrink-0 relative group shadow-md"
+          className="w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0 text-white shadow-sm"
           style={{
-            background: 'linear-gradient(135deg, #6366f1 0%, #8b5cf6 50%, #d946ef 100%)',
+            background: 'linear-gradient(135deg, #6366f1 0%, #4f46e5 100%)',
           }}
         >
-          <div className="absolute inset-0 rounded-2xl bg-white/20 opacity-0 group-hover:opacity-100 transition-opacity" />
-          <Zap size={22} className="text-white drop-shadow-sm" fill="white" />
+          <Zap size={20} fill="white" />
         </div>
-        {!collapsed && (
-          <div className="min-w-0">
-            <span className="text-[19px] font-extrabold tracking-tight gradient-text-vibrant block leading-tight">
-              FocusFlow
-            </span>
-            <span className="text-[11px] font-semibold uppercase tracking-wider text-indigo-500/80 block mt-0.5">
-              Workspace Pro
-            </span>
-          </div>
-        )}
+        <div>
+          <span className="text-[19px] font-bold tracking-tight text-slate-900 dark:text-white leading-tight block">
+            FocusFlow
+          </span>
+          <span className="text-[11px] font-bold tracking-wider text-slate-400 dark:text-slate-500 uppercase block">
+            WORKSPACE PRO
+          </span>
+        </div>
       </div>
 
-      {/* Nav Section */}
-      <nav className="flex-1 py-6 px-3.5 space-y-1.5 overflow-y-auto" aria-label="Main navigation">
-        {!collapsed && (
-          <p
-            className="text-[11px] font-bold uppercase tracking-wider px-3 mb-2.5"
-            style={{ color: 'var(--text-tertiary)' }}
-          >
-            Menu
-          </p>
-        )}
+      {/* Navigation List */}
+      <nav className="flex-1 px-4 py-3 space-y-1" aria-label="Main navigation">
         {navItems.map((item) => {
           const Icon = item.icon;
           const active = isActive(item.path);
@@ -86,114 +60,49 @@ export default function Sidebar() {
             <button
               key={item.path}
               onClick={() => navigate(item.path)}
-              className={`w-full flex items-center gap-3.5 px-3.5 py-3 rounded-2xl text-[14px] font-semibold transition-all duration-200 group relative ${
-                collapsed ? 'justify-center' : ''
-              } ${active ? 'shadow-sm' : ''}`}
-              style={{
-                backgroundColor: active ? 'var(--accent-subtle)' : 'transparent',
-                color: active ? '#6366f1' : 'var(--text-secondary)',
-              }}
-              onMouseEnter={(e) => {
-                if (!active) e.currentTarget.style.backgroundColor = 'var(--hover-bg)';
-              }}
-              onMouseLeave={(e) => {
-                if (!active) e.currentTarget.style.backgroundColor = 'transparent';
-              }}
-              title={collapsed ? item.label : undefined}
-              aria-current={active ? 'page' : undefined}
+              className={`w-full flex items-center gap-3.5 px-4 py-3 rounded-2xl text-[14px] font-medium transition-all text-left ${
+                active
+                  ? 'bg-indigo-50/80 text-indigo-600 dark:bg-indigo-950/40 dark:text-indigo-400 font-semibold'
+                  : 'text-slate-600 hover:text-slate-900 hover:bg-slate-50 dark:text-slate-400 dark:hover:text-slate-200 dark:hover:bg-slate-800/50'
+              }`}
             >
-              {active && (
-                <div
-                  className="absolute left-1 top-2.5 bottom-2.5 w-1.5 rounded-full"
-                  style={{
-                    background: 'linear-gradient(to bottom, #6366f1, #8b5cf6)',
-                  }}
-                />
-              )}
-              <div
-                className={`p-1.5 rounded-xl transition-transform duration-200 ${
-                  active ? 'bg-indigo-500/10 text-indigo-500 scale-105' : 'group-hover:scale-110'
-                }`}
-              >
-                <Icon size={19} strokeWidth={active ? 2.5 : 2} />
-              </div>
-              {!collapsed && <span className="font-medium tracking-tight">{item.label}</span>}
+              <Icon size={18} strokeWidth={active ? 2.4 : 1.8} className={active ? 'text-indigo-600 dark:text-indigo-400' : 'text-slate-400'} />
+              <span>{item.label}</span>
             </button>
           );
         })}
       </nav>
 
-      {/* Footer controls & Profile card */}
-      <div
-        className="px-3.5 pb-5 pt-3 border-t space-y-2 flex-shrink-0"
-        style={{ borderColor: 'var(--border-subtle)' }}
-      >
+      {/* Bottom Settings & User Card */}
+      <div className="px-4 pb-6 pt-3 space-y-3">
         <button
           onClick={() => navigate('/settings')}
-          className={`w-full flex items-center gap-3.5 px-3.5 py-2.5 rounded-2xl text-[14px] font-medium transition-all ${
-            collapsed ? 'justify-center' : ''
+          className={`w-full flex items-center gap-3.5 px-4 py-2.5 rounded-2xl text-[14px] font-medium transition-all text-left ${
+            isActive('/settings')
+              ? 'bg-indigo-50/80 text-indigo-600 dark:bg-indigo-950/40 dark:text-indigo-400 font-semibold'
+              : 'text-slate-600 hover:text-slate-900 hover:bg-slate-50 dark:text-slate-400 dark:hover:text-slate-200 dark:hover:bg-slate-800/50'
           }`}
-          style={{
-            backgroundColor: isActive('/settings') ? 'var(--accent-subtle)' : 'transparent',
-            color: isActive('/settings') ? '#6366f1' : 'var(--text-secondary)',
-          }}
-          onMouseEnter={(e) => {
-            if (!isActive('/settings')) e.currentTarget.style.backgroundColor = 'var(--hover-bg)';
-          }}
-          onMouseLeave={(e) => {
-            if (!isActive('/settings')) e.currentTarget.style.backgroundColor = 'transparent';
-          }}
-          title={collapsed ? 'Settings' : undefined}
         >
-          <Settings size={18} />
-          {!collapsed && <span>Settings</span>}
-        </button>
-
-        <button
-          onClick={() => setCollapsed(!collapsed)}
-          className={`w-full flex items-center gap-3.5 px-3.5 py-2 rounded-2xl text-[13px] font-medium transition-all ${
-            collapsed ? 'justify-center' : ''
-          }`}
-          style={{ color: 'var(--text-tertiary)' }}
-          onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = 'var(--hover-bg)')}
-          onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = 'transparent')}
-          aria-label={collapsed ? 'Expand sidebar' : 'Collapse sidebar'}
-        >
-          {collapsed ? <ChevronRight size={18} /> : <ChevronLeft size={18} />}
-          {!collapsed && <span>Collapse Sidebar</span>}
+          <Settings size={18} strokeWidth={1.8} className="text-slate-400" />
+          <span>Settings</span>
         </button>
 
         {/* User Card */}
-        <div
-          className={`flex items-center gap-3 p-2.5 rounded-2xl border transition-all ${
-            collapsed ? 'justify-center' : ''
-          }`}
-          style={{
-            backgroundColor: 'var(--bg-tertiary)',
-            borderColor: 'var(--border-subtle)',
-          }}
-        >
-          <div
-            className="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0 text-white font-bold text-sm shadow-sm"
-            style={{
-              background: 'linear-gradient(135deg, #6366f1 0%, #ec4899 100%)',
-            }}
-          >
-            FF
-          </div>
-          {!collapsed && (
-            <div className="min-w-0 flex-1">
-              <div className="flex items-center gap-1.5">
-                <p className="text-[13px] font-bold truncate leading-tight" style={{ color: 'var(--text-primary)' }}>
-                  Focus User
-                </p>
-                <Sparkles size={12} className="text-amber-500 flex-shrink-0" fill="#f59e0b" />
-              </div>
-              <p className="text-[11px] font-medium truncate mt-0.5" style={{ color: 'var(--text-tertiary)' }}>
+        <div className="flex items-center justify-between p-2.5 rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-xs">
+          <div className="flex items-center gap-3 min-w-0">
+            <div className="w-9 h-9 rounded-xl bg-indigo-600 text-white flex items-center justify-center font-bold text-xs flex-shrink-0">
+              FF
+            </div>
+            <div className="min-w-0">
+              <p className="text-[13px] font-bold text-slate-900 dark:text-slate-100 truncate leading-snug">
+                Focus User
+              </p>
+              <p className="text-[11px] text-slate-400 dark:text-slate-500 truncate">
                 Productivity Master
               </p>
             </div>
-          )}
+          </div>
+          <ChevronRight size={16} className="text-slate-400 flex-shrink-0 mr-1" />
         </div>
       </div>
     </aside>

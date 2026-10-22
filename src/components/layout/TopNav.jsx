@@ -1,18 +1,18 @@
 import { useState } from 'react';
 import { useLocation } from 'react-router-dom';
-import { Plus, Sun, Moon, Zap, Sparkles } from 'lucide-react';
+import { Plus, Sun, Moon, Bell } from 'lucide-react';
 import { useTheme } from '../../context/ThemeContext';
 import SearchBar from '../ui/SearchBar';
 import NotificationDropdown from '../ui/NotificationDropdown';
 import TaskModal from '../tasks/TaskModal';
 
 const pageMeta = {
-  '/': { title: 'Dashboard', subtitle: 'Real-time performance and task analytics' },
+  '/': { title: 'Dashboard', subtitle: "Here's what's happening with your tasks today." },
   '/tasks': { title: 'My Tasks', subtitle: 'Manage and prioritize your daily workflow' },
-  '/today': { title: 'Today’s Focus', subtitle: 'High-impact deliverables due today' },
-  '/upcoming': { title: 'Upcoming Timeline', subtitle: 'Scheduled roadmap and upcoming deadlines' },
-  '/completed': { title: 'Completed Archive', subtitle: 'Review and track past accomplishments' },
-  '/settings': { title: 'Preferences', subtitle: 'App customization and workspace settings' },
+  '/today': { title: 'Today', subtitle: 'Focus on today' },
+  '/upcoming': { title: 'Upcoming', subtitle: 'Plan ahead' },
+  '/completed': { title: 'Completed', subtitle: 'Your accomplishments' },
+  '/settings': { title: 'Settings', subtitle: 'Customize your experience' },
 };
 
 export default function TopNav({ searchQuery, onSearchChange }) {
@@ -27,90 +27,60 @@ export default function TopNav({ searchQuery, onSearchChange }) {
 
   return (
     <>
-      <header
-        className="sticky top-0 z-20 transition-colors duration-200"
-        style={{
-          backgroundColor: 'var(--bg-secondary)',
-          backdropFilter: 'blur(20px)',
-          WebkitBackdropFilter: 'blur(20px)',
-          borderBottom: '1px solid var(--border-color)',
-        }}
-      >
-        <div className="flex items-center justify-between px-4 sm:px-8 h-20">
-          {/* Header Title Area */}
-          <div className="flex items-center gap-3.5 min-w-0">
-            <div className="md:hidden flex items-center gap-2 flex-shrink-0">
-              <div
-                className="w-10 h-10 rounded-2xl flex items-center justify-center shadow-md"
-                style={{
-                  background: 'linear-gradient(135deg, #6366f1 0%, #a855f7 100%)',
-                }}
-              >
-                <Zap size={20} className="text-white" fill="white" />
-              </div>
-            </div>
-            <div className="min-w-0">
-              <h1
-                className="text-xl sm:text-2xl font-extrabold tracking-tight truncate leading-tight"
-                style={{ color: 'var(--text-primary)' }}
-              >
-                {currentMeta.title}
-              </h1>
-              <p
-                className="hidden sm:block text-[13px] font-medium leading-tight mt-1 truncate"
-                style={{ color: 'var(--text-tertiary)' }}
-              >
-                {currentMeta.subtitle}
-              </p>
-            </div>
+      <header className="sticky top-0 z-20 bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800">
+        <div className="flex items-center justify-between px-6 sm:px-10 h-20">
+          {/* Header Title & Subtitle */}
+          <div className="min-w-0 pr-4">
+            <h1 className="text-xl sm:text-2xl font-bold text-slate-900 dark:text-white leading-tight">
+              {currentMeta.title}
+            </h1>
+            <p className="text-[13px] text-slate-400 dark:text-slate-500 font-normal leading-tight mt-1">
+              {currentMeta.subtitle}
+            </p>
           </div>
 
-          {/* Action Bar */}
-          <div className="flex items-center gap-2.5 sm:gap-3 flex-shrink-0">
-            {onSearchChange && (
-              <div className="hidden md:block w-64 lg:w-80">
-                <SearchBar value={searchQuery || ''} onChange={onSearchChange} />
-              </div>
-            )}
+          {/* Action Row */}
+          <div className="flex items-center gap-4 flex-shrink-0">
+            {/* Search Bar with ⌘K badge */}
+            <div className="w-56 sm:w-64 md:w-72">
+              <SearchBar value={searchQuery || ''} onChange={onSearchChange || (() => {})} />
+            </div>
 
-            {/* Dark Mode Toggle */}
-            <button
-              onClick={toggleTheme}
-              className="p-2.5 sm:p-3 rounded-2xl border transition-all duration-200 hover:scale-105 active:scale-95 shadow-sm"
-              style={{
-                backgroundColor: 'var(--bg-tertiary)',
-                borderColor: 'var(--border-subtle)',
-                color: 'var(--text-secondary)',
-              }}
-              aria-label={`Switch to ${theme === 'light' ? 'dark' : 'light'} mode`}
-            >
-              {theme === 'light' ? (
-                <Moon size={18} className="text-indigo-600" />
-              ) : (
-                <Sun size={18} className="text-amber-400" />
-              )}
-            </button>
+            {/* Pill Toggle Switch for Theme */}
+            <div className="flex items-center gap-1.5">
+              <Sun size={15} className={`${theme === 'light' ? 'text-amber-500' : 'text-slate-400'}`} />
+              <button
+                type="button"
+                onClick={toggleTheme}
+                role="switch"
+                aria-checked={theme === 'dark'}
+                aria-label="Toggle dark mode"
+                className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none ${
+                  theme === 'dark' ? 'bg-indigo-600' : 'bg-slate-200'
+                }`}
+              >
+                <span
+                  className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
+                    theme === 'dark' ? 'translate-x-6' : 'translate-x-1'
+                  }`}
+                />
+              </button>
+              <Moon size={14} className={`${theme === 'dark' ? 'text-indigo-400' : 'text-slate-400'}`} />
+            </div>
 
-            {/* Notifications */}
+            {/* Notification bell with red badge */}
             <NotificationDropdown />
 
-            {/* New Task Button */}
+            {/* + Create task button */}
             <button
               onClick={() => setShowTaskModal(true)}
-              className="btn-vibrant flex items-center gap-2 px-4 sm:px-5 py-2.5 sm:py-3 rounded-2xl text-[13.5px] font-bold transition-all"
+              className="flex items-center gap-1.5 px-4 py-2.5 rounded-full text-white text-[13px] font-semibold bg-indigo-600 hover:bg-indigo-700 transition-all shadow-sm active:scale-95"
             >
-              <Plus size={18} strokeWidth={2.8} />
-              <span className="hidden sm:inline">Create Task</span>
+              <Plus size={16} strokeWidth={2.5} />
+              <span>Create task</span>
             </button>
           </div>
         </div>
-
-        {/* Mobile Search input */}
-        {onSearchChange && (
-          <div className="md:hidden px-4 pb-3.5 pt-1">
-            <SearchBar value={searchQuery || ''} onChange={onSearchChange} />
-          </div>
-        )}
       </header>
 
       <TaskModal isOpen={showTaskModal} onClose={() => setShowTaskModal(false)} />
